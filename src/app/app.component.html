@@ -1,7 +1,56 @@
-<label for="file">File:</label>
+<!-- <label for="file">File:</label>
 <br>
 <input type="file" (change)="upload($event)" accept=".png,.jpg"/>
 <br>
 <progress max="100" [value]="(uploadProgress | async)"></progress>
 <br>
-{{ downloadURL }}
+{{ this.downloadURL }}
+ -->
+
+ <div class="contenedor">
+    <div class="contenedor_formulario">
+      <h1 class="is-size-1">Subir archivos a RDI</h1>
+      <p class="download" *ngIf="finalizado">URL de descarga: <a href="{{ this.URLPublica }}" target="_blank">Descargar</a></p>
+      <form [formGroup]="archivoForm" (ngSubmit)="subirArchivo()">
+        <div class="file has-name is-boxed">
+          <label class="file-label">
+            <input class="file-input" type="file" formControlName="archivo" (change)="cambioArchivo($event)">
+            <span class="file-cta">
+              <span class="file-label">
+                Elegir un archivo…
+              </span>
+            </span>
+            <span class="file-name">
+              {{ mensajeArchivo }}
+            </span>
+          </label>
+        </div>
+        <hr>
+        <progress *ngIf="porcentaje > 0 && porcentaje < 100" class="progress is-large is-success" value="{{porcentaje}}" max="100">{{porcentaje}}%</progress>
+        <div class="columns">
+            <div class="column is-full">
+                <label class="label">
+                    Categoria
+                </label>
+                <div class="select" >
+                    <select required formControlName="categoria">
+                        <option value="" selected disabled hidden>Elegir una categoria</option>
+                        <option value="Bebida">Bebida</option>
+                        <option value="Comida">Comida</option>
+                    </select>
+                </div> 
+            </div>
+        </div>
+        <div class="column is-two-fifths">
+            <label class="label">
+                Etiqueta
+            </label>
+            <input type="text" placeholder="tag" class="input" formControlName="etiqueta"> 
+        </div>
+        <div class="col-md-6">
+            <br>
+            <button type="submit" [ngClass]="{'button': true, 'is-success': true, 'is-large': true, 'is-loading': porcentaje > 0 && porcentaje < 100}" [disabled]="!archivoForm.valid && (porcentaje > 0 && porcentaje < 100)">Subir archivo</button>
+        </div>
+      </form>
+    </div>
+  </div>
