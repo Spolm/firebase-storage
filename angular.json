@@ -28,8 +28,10 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss",
-              "node_modules/bulma/css/bulma.css"
+              {
+              "input": "./node_modules/bootstrap/dist/css/bootstrap.min.css"
+            },
+              "src/styles.scss"
             ],
             "scripts": []
           },
@@ -94,8 +96,10 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss",
-              "node_modules/bulma/css/bulma.css"
+              {
+                "input": "./node_modules/bootstrap/dist/css/bootstrap.min.css"
+              },
+                "src/styles.scss"
             ],
             "scripts": []
           }

@@ -1,6 +1,11 @@
 import { Component } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { FirebaseStorageService } from './firebase-storage.service';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { DocumentReference } from '@angular/fire/firestore';
+import { Todo } from './todo/models/todo';
+import { R3ResolvedDependencyType } from '@angular/compiler/src/compiler_facade_interface';
+import { TodoService } from './todo/services/todo.service';
 
 @Component({
   selector: 'app-root',
@@ -9,15 +14,35 @@ import { FirebaseStorageService } from './firebase-storage.service';
 })
 export class AppComponent {
 
-  constructor (
-    private firebaseStorage: FirebaseStorageService
-  ) {}
+  todoForm: FormGroup;
+  constructor(private formBuilder: FormBuilder,
+    public activeModal: NgbActiveModal, private firebaseStorage: FirebaseStorageService,
+    private todoService: TodoService) {  }
 
-  public archivoForm = new FormGroup({
-    archivo: new FormControl(null, Validators.required),
-    categoria: new FormControl(null, Validators.required),
-    etiqueta: new FormControl(null, Validators.required)
-  });
+    ngOnInit(){
+      this.todoForm = this.formBuilder.group({ 
+        title: ['',Validators.required],
+        description: ['',Validators.required],
+        done: false
+      });
+    }
+
+    saveTodo() {
+      if (this.todoForm.invalid){
+        return;
+      }
+      let todo: Todo = this.todoForm.value;
+      todo.lastModifiedDate = new Date();
+      this.todoService.saveTodo(todo)
+        .then(response => this.handleSuccessfulSaveTodo(response, todo))
+        .catch(err => console.error(err));
+    }
+
+    handleSuccessfulSaveTodo(response: DocumentReference, todo: Todo) {
+      this.activeModal.dismiss({ todo: todo, id: response.id });
+    }
+
+
   public mensajeArchivo = 'No hay un archivo seleccionado';
   public datosFormulario = new FormData();
   public nombreArchivo = '';
